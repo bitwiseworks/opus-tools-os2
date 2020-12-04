@@ -55,6 +55,12 @@
 # define snprintf _snprintf
 #endif
 
+#if defined(__OS2__)
+/* We need the following two to set stdout to binary */
+# include <io.h>
+# include <fcntl.h>
+#endif
+
 #if defined WIN32 || defined _WIN32
 # include "unicode_support.h"
 /* We need the following two to set stdout to binary */
@@ -822,8 +828,8 @@ int main(int argc, char **argv)
   if (strcmp(inFile, "-")==0) {
 #if defined WIN32 || defined _WIN32
     _setmode(_fileno(stdin), _O_BINARY);
-#elif defined OS2
-    _fsetmode(stdin,"b");
+#elif defined(__OS2__)
+    setmode(fileno(stdin), O_BINARY);
 #endif
     fin=stdin;
   } else {
@@ -1030,6 +1036,8 @@ int main(int argc, char **argv)
   if (strcmp(outFile,"-")==0) {
 #if defined WIN32 || defined _WIN32
     _setmode(_fileno(stdout), _O_BINARY);
+#elif defined(__OS2__)
+    setmode(fileno(stdout), O_BINARY);
 #endif
     data.fout=stdout;
   } else {

@@ -52,6 +52,12 @@
 # define HAVE_SOFT_CLIP (1)
 #endif
 
+#if defined(__OS2__)
+/* We need the following two to set stdout to binary */
+# include <io.h>
+# include <fcntl.h>
+#endif
+
 #if defined WIN32 || defined _WIN32
 # include "unicode_support.h"
 # include "wave_out.h"
@@ -402,6 +408,8 @@ static int out_file_open(const char *outFile, int *wav_format, int rate,
       {
 #if defined WIN32 || defined _WIN32
          _setmode(_fileno(stdout), _O_BINARY);
+#elif defined(__OS2__)
+         setmode(fileno(stdout), O_BINARY);
 #endif
          *fout=stdout;
       }
@@ -843,6 +851,9 @@ int main(int argc, char **argv)
       _setmode(fd, _O_BINARY);
 #else
       fd = fileno(stdin);
+#if defined(__OS2__)
+      setmode(fd, O_BINARY);
+#endif
 #endif
       st=op_open_callbacks(op_fdopen(&cb, fd, "rb"), &cb, NULL, 0, NULL);
    }
