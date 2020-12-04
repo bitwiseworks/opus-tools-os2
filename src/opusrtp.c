@@ -380,7 +380,7 @@ int parse_loop_header(const unsigned char *packet, int size, loop_header *loop)
 
 void format_ipv6_addr(const unsigned char *addr, char *buf, size_t bufsize)
 {
-#ifdef HAVE_INET_NTOP
+#if defined(HAVE_INET_NTOP) && !defined(__OS2__)
   if (inet_ntop(AF_INET6, addr, buf, bufsize)) return;
 #endif
   snprintf(buf, bufsize, "%x:%x:%x:%x:%x:%x:%x:%x",
